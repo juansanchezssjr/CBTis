@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f3f8">
+  <meta name="description" content="Índice de proyectos y archivos de la compilación CBTis 246.">
+  <title>Compilación CBTis 246 — índice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f3f8;
+      --panel: #fff;
+      --panel-soft: #faf8fc;
+      --line: #e7e2ed;
+      --line-strong: #d7d0e0;
+      --text: #282432;
+      --muted: #716b7c;
+      --dim: #938c9e;
+      --lilac: #7651a8;
+      --pink: #b94e78;
+      --mint: #397c64;
+      --mono: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      background-color: var(--bg);
+      background-image: linear-gradient(90deg, transparent 39px, rgb(70 52 92 / 3%) 40px, transparent 41px);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    a,
+    button,
+    input {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--lilac);
+      outline-offset: 3px;
+    }
+
+    .terminal {
+      width: min(1120px, calc(100% - 32px));
+      margin: 28px auto;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      background: var(--panel);
+      box-shadow: 0 12px 40px rgb(52 39 68 / 6%);
+    }
+
+    .terminal-bar {
+      display: flex;
+      min-height: 42px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 18px;
+      border-bottom: 1px solid var(--line-strong);
+      background: var(--panel-soft);
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .terminal-mark {
+      color: var(--mint);
+    }
+
+    .scan-state {
+      color: var(--mint);
+      text-align: right;
+    }
+
+    .intro {
+      padding: clamp(24px, 6vw, 56px) clamp(20px, 6vw, 64px) 30px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--mint);
+      font-size: 12px;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: clamp(27px, 5vw, 44px);
+      font-weight: 600;
+      letter-spacing: -0.07em;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    .title-accent {
+      color: var(--lilac);
+    }
+
+    .intro-copy {
+      max-width: 720px;
+      margin-bottom: 22px;
+      color: var(--muted);
+    }
+
+    .search-wrap {
+      position: relative;
+      max-width: 560px;
+    }
+
+    .search-wrap::before {
+      position: absolute;
+      top: 50%;
+      left: 13px;
+      color: var(--dim);
+      content: "/";
+      transform: translateY(-50%);
+    }
+
+    .search {
+      width: 100%;
+      min-height: 44px;
+      padding: 9px 14px 9px 30px;
+      border: 1px solid var(--line-strong);
+      border-radius: 0;
+      background: var(--panel);
+      color: var(--text);
+      font: inherit;
+    }
+
+    .search::placeholder {
+      color: var(--dim);
+    }
+
+    .catalog {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+    }
+
+    .section {
+      min-width: 0;
+      padding: 24px clamp(16px, 3vw, 32px) 30px;
+    }
+
+    .section + .section {
+      border-left: 1px solid var(--line);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 5px;
+    }
+
+    h2 {
+      margin-bottom: 0;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.04em;
+    }
+
+    .count {
+      color: var(--lilac);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .section-copy {
+      min-height: 42px;
+      margin-bottom: 15px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .item-list {
+      display: grid;
+      max-height: 430px;
+      gap: 8px;
+      margin: 0;
+      padding: 2px 6px 2px 2px;
+      overflow: auto;
+      list-style: none;
+      scrollbar-color: var(--line-strong) transparent;
+      scrollbar-width: thin;
+    }
+
+    .item {
+      min-width: 0;
+    }
+
+    .item-link {
+      display: flex;
+      min-height: 62px;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      color: inherit;
+      text-decoration: none;
+      transition: border-color 120ms ease, background-color 120ms ease, transform 120ms ease;
+    }
+
+    .item-link:hover {
+      transform: translateY(-1px);
+      border-color: var(--line-strong);
+      background: #fff;
+    }
+
+    .item-icon {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      place-items: center;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--lilac);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .item-copy {
+      min-width: 0;
+    }
+
+    .item-name,
+    .item-path {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .item-name {
+      font-weight: 600;
+    }
+
+    .item-path {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .message {
+      padding: 16px;
+      border: 1px dashed var(--line-strong);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .message.error {
+      border-color: #dfb4c3;
+      color: #8f3655;
+    }
+
+    .message[hidden] {
+      display: none;
+    }
+
+    .footer {
+      padding: 14px clamp(20px, 6vw, 64px);
+      border-top: 1px solid var(--line);
+      color: var(--dim);
+      font-size: 10px;
+    }
+
+    @media (max-width: 700px) {
+      .terminal {
+        width: min(100% - 20px, 560px);
+        margin: 10px auto;
+      }
+
+      .catalog {
+        grid-template-columns: 1fr;
+      }
+
+      .section + .section {
+        border-top: 1px solid var(--line);
+        border-left: 0;
+      }
+
+      .section-copy {
+        min-height: 0;
+      }
+
+      .item-list {
+        max-height: 340px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="terminal">
+    <header class="terminal-bar">
+      <span><span class="terminal-mark">●</span> CBTis 246 / índice</span>
+      <span class="scan-state" id="scan-state" role="status" aria-live="polite">Buscando contenido...</span>
+    </header>
+
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">Compilación de proyectos</p>
+      <h1 id="page-title">Explora el <span class="title-accent">archivo.</span></h1>
+      <p class="intro-copy">Accesos a proyectos y recursos. Las carpetas de proyectos aparecen cuando incluyen su propio <code>index.html</code>.</p>
+      <label class="search-wrap">
+        <span hidden>Filtrar proyectos y archivos</span>
+        <input class="search" id="search" type="search" placeholder="Filtrar por nombre o ruta..." autocomplete="off">
+      </label>
+    </section>
+
+    <div class="catalog">
+      <section class="section" aria-labelledby="pages-title">
+        <div class="section-heading">
+          <h2 id="pages-title">Proyectos</h2>
+          <span class="count" id="pages-count">0 elementos</span>
+        </div>
+        <p class="section-copy">Páginas HTML sueltas y carpetas que tienen un <code>index.html</code> en su raíz.</p>
+        <div class="message" id="pages-message" role="status">Cargando proyectos...</div>
+        <ul class="item-list" id="pages-list" aria-label="Proyectos"></ul>
+      </section>
+
+      <section class="section" aria-labelledby="media-title">
+        <div class="section-heading">
+          <h2 id="media-title">Media</h2>
+          <span class="count" id="media-count">0 elementos</span>
+        </div>
+        <p class="section-copy">Archivos encontrados en <code>media</code>, incluidas sus subcarpetas.</p>
+        <div class="message" id="media-message" role="status">Cargando archivos...</div>
+        <ul class="item-list" id="media-list" aria-label="Archivos multimedia"></ul>
+      </section>
+    </div>
+
+    <footer class="footer">El contenido se actualiza al cargar esta página. Requiere un servidor web que permita listar carpetas; no se puede escanear al abrir el archivo directamente.</footer>
+  </main>
+
+  <script>
+    const searchInput = document.querySelector("#search");
+    const scanState = document.querySelector("#scan-state");
+    const catalogs = {
+      pages: {
+        path: "pages/",
+        list: document.querySelector("#pages-list"),
+        count: document.querySelector("#pages-count"),
+        message: document.querySelector("#pages-message")
+      },
+      media: {
+        path: "media/",
+        list: document.querySelector("#media-list"),
+        count: document.querySelector("#media-count"),
+        message: document.querySelector("#media-message")
+      }
+    };
+
+    async function readDirectory(path) {
+      const response = await fetch(path);
+      if (!response.ok) {
+        throw new Error(`No se pudo leer ${path} (HTTP ${response.status}).`);
+      }
+
+      const html = await response.text();
+      const documentPage = new DOMParser().parseFromString(html, "text/html");
+      const base = new URL(path, window.location.href);
+      const links = [...documentPage.querySelectorAll("a[href]")];
+      const entries = new Map();
+
+      for (const link of links) {
+        const href = link.getAttribute("href");
+        if (!href || href.startsWith("?") || href.startsWith("#")) {
+          continue;
+        }
+
+        const url = new URL(href, response.url);
+        if (url.origin !== base.origin || !url.pathname.startsWith(base.pathname)) {
+          continue;
+        }
+
+        const relativePath = decodeURIComponent(url.pathname.slice(base.pathname.length));
+        if (!relativePath || relativePath.includes("/") || relativePath === "..") {
+          continue;
+        }
+
+        entries.set(relativePath, {
+          name: relativePath.replace(/\/$/, ""),
+          path: `${base.pathname}${relativePath}`,
+          isDirectory: relativePath.endsWith("/")
+        });
+      }
+
+      return [...entries.values()];
+    }
+
+    async function hasRootIndex(directoryPath) {
+      const indexUrl = new URL("index.html", new URL(directoryPath, window.location.href));
+      let response = await fetch(indexUrl, { method: "HEAD" });
+
+      if (response.status === 405 || response.status === 501) {
+        response = await fetch(indexUrl);
+      }
+
+      return response.ok && response.headers.get("content-type")?.includes("text/html") !== false;
+    }
+
+    async function scanPages() {
+      const entries = await readDirectory(catalogs.pages.path);
+      const projects = entries.filter(entry => !entry.isDirectory && /\.html$/i.test(entry.name));
+      const folders = entries.filter(entry => entry.isDirectory);
+
+      const folderResults = await Promise.all(folders.map(async folder =>
+        await hasRootIndex(folder.path) ? {
+          ...folder,
+          label: folder.name,
+          path: `/a/${encodeURIComponent(folder.name)}/`,
+          kind: "DIR"
+        } : null
+      ));
+
+      return [
+        ...folderResults.filter(Boolean),
+        ...projects.map(project => ({
+          ...project,
+          label: project.name,
+          path: `/a/${encodeURIComponent(project.name.replace(/\.html$/i, ""))}`,
+          kind: "HTML"
+        }))
+      ];
+    }
+
+    async function scanMedia() {
+      const pending = [catalogs.media.path];
+      const visited = new Set();
+      const files = [];
+
+      while (pending.length) {
+        const directory = pending.shift();
+        if (visited.has(directory)) {
+          continue;
+        }
+        visited.add(directory);
+
+        for (const entry of await readDirectory(directory)) {
+          if (entry.isDirectory) {
+            pending.push(entry.path);
+          } else {
+            files.push({
+              ...entry,
+              label: entry.path.slice(catalogs.media.path.length),
+              kind: fileKind(entry.name)
+            });
+          }
+        }
+      }
+
+      return files;
+    }
+
+    function fileKind(name) {
+      const extension = name.split(".").pop().toLowerCase();
+      const kinds = {
+        avif: "IMG", gif: "IMG", jpeg: "IMG", jpg: "IMG", png: "IMG", svg: "IMG", webp: "IMG",
+        mp3: "AUD", m4a: "AUD", ogg: "AUD", wav: "AUD",
+        mp4: "VID", mov: "VID", webm: "VID",
+        pdf: "PDF"
+      };
+      return kinds[extension] || "FILE";
+    }
+
+    function renderCatalog(catalog, items) {
+      catalog.items = items.sort((a, b) => a.label.localeCompare(b.label, "es", { numeric: true, sensitivity: "base" }));
+      catalog.message.hidden = catalog.items.length > 0;
+      catalog.message.classList.remove("error");
+      catalog.message.textContent = catalog.items.length ? "" : "No se encontraron elementos en esta carpeta.";
+      filterCatalog(catalog);
+    }
+
+    function renderError(catalog, error) {
+      catalog.items = [];
+      catalog.message.hidden = false;
+      catalog.message.classList.add("error");
+      catalog.message.textContent = `${error.message} Comprueba que el servidor permita listar carpetas.`;
+      filterCatalog(catalog);
+    }
+
+    function filterCatalog(catalog) {
+      const query = searchInput.value.trim().toLocaleLowerCase("es");
+      const filtered = (catalog.items || []).filter(item =>
+        `${item.label} ${item.path}`.toLocaleLowerCase("es").includes(query)
+      );
+
+      catalog.list.replaceChildren(...filtered.map(item => {
+        const listItem = document.createElement("li");
+        listItem.className = "item";
+
+        const link = document.createElement("a");
+        link.className = "item-link";
+        link.href = item.path;
+
+        const icon = document.createElement("span");
+        icon.className = "item-icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.textContent = item.kind;
+
+        const copy = document.createElement("span");
+        copy.className = "item-copy";
+
+        const name = document.createElement("span");
+        name.className = "item-name";
+        name.textContent = item.label;
+
+        const path = document.createElement("span");
+        path.className = "item-path";
+        path.textContent = item.path;
+
+        copy.append(name, path);
+        link.append(icon, copy);
+        listItem.append(link);
+        return listItem;
+      }));
+
+      const total = filtered.length;
+      catalog.count.textContent = `${total} ${total === 1 ? "elemento" : "elementos"}`;
+      if ((catalog.items || []).length && !total) {
+        catalog.message.hidden = false;
+        catalog.message.classList.remove("error");
+        catalog.message.textContent = "No hay coincidencias con esa búsqueda.";
+      } else if (total) {
+        catalog.message.hidden = true;
+      }
+    }
+
+    searchInput.addEventListener("input", () => {
+      filterCatalog(catalogs.pages);
+      filterCatalog(catalogs.media);
+    });
+
+    async function loadCatalog(key, scanner) {
+      const catalog = catalogs[key];
+      try {
+        renderCatalog(catalog, await scanner());
+        return true;
+      } catch (error) {
+        renderError(catalog, error);
+        return false;
+      }
+    }
+
+    Promise.all([
+      loadCatalog("pages", scanPages),
+      loadCatalog("media", scanMedia)
+    ]).then(results => {
+      const found = results.reduce((sum, success, index) =>
+        sum + (success ? (catalogs[index === 0 ? "pages" : "media"].items || []).length : 0), 0);
+      scanState.textContent = results.every(Boolean)
+        ? `${found} elementos`
+        : "Revisa el acceso a las carpetas";
+    });
+  </script>
+</body>
+</html>

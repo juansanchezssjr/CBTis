@@ -1,0 +1,8 @@
+# Keep the Pages source paths as the canonical short URLs.
+/pages/:project.html /a/:project 301
+/pages/:project/index.html /a/:project/ 301
+/pages/:project/ /a/:project/ 301
+
+# Rewrite short URLs to the deployed static files.
+/a/:project/ /pages/:project/ 200
+/a/:project /pages/:project.html 200
