@@ -351,7 +351,7 @@
       </section>
     </div>
 
-    <footer class="footer">El contenido se actualiza al cargar esta página. Requiere un servidor web que permita listar carpetas; no se puede escanear al abrir el archivo directamente.</footer>
+    <footer class="footer">El catálogo se genera al desplegar el sitio. Al agregar contenido a <code>pages</code> o <code>media</code>, vuelve a ejecutar el comando de compilación.</footer>
   </main>
 
   <script>
@@ -359,130 +359,28 @@
     const scanState = document.querySelector("#scan-state");
     const catalogs = {
       pages: {
-        path: "pages/",
         list: document.querySelector("#pages-list"),
         count: document.querySelector("#pages-count"),
         message: document.querySelector("#pages-message")
       },
       media: {
-        path: "media/",
         list: document.querySelector("#media-list"),
         count: document.querySelector("#media-count"),
         message: document.querySelector("#media-message")
       }
     };
 
-    async function readDirectory(path) {
-      const response = await fetch(path);
+    async function readCatalog() {
+      const response = await fetch("catalog.json");
       if (!response.ok) {
-        throw new Error(`No se pudo leer ${path} (HTTP ${response.status}).`);
+        throw new Error(`No se pudo cargar catalog.json (HTTP ${response.status}).`);
       }
 
-      const html = await response.text();
-      const documentPage = new DOMParser().parseFromString(html, "text/html");
-      const base = new URL(path, window.location.href);
-      const links = [...documentPage.querySelectorAll("a[href]")];
-      const entries = new Map();
-
-      for (const link of links) {
-        const href = link.getAttribute("href");
-        if (!href || href.startsWith("?") || href.startsWith("#")) {
-          continue;
-        }
-
-        const url = new URL(href, response.url);
-        if (url.origin !== base.origin || !url.pathname.startsWith(base.pathname)) {
-          continue;
-        }
-
-        const relativePath = decodeURIComponent(url.pathname.slice(base.pathname.length));
-        if (!relativePath || relativePath.includes("/") || relativePath === "..") {
-          continue;
-        }
-
-        entries.set(relativePath, {
-          name: relativePath.replace(/\/$/, ""),
-          path: `${base.pathname}${relativePath}`,
-          isDirectory: relativePath.endsWith("/")
-        });
+      const catalog = await response.json();
+      if (!catalog || !Array.isArray(catalog.pages) || !Array.isArray(catalog.media)) {
+        throw new Error("catalog.json no tiene el formato esperado.");
       }
-
-      return [...entries.values()];
-    }
-
-    async function hasRootIndex(directoryPath) {
-      const indexUrl = new URL("index.html", new URL(directoryPath, window.location.href));
-      let response = await fetch(indexUrl, { method: "HEAD" });
-
-      if (response.status === 405 || response.status === 501) {
-        response = await fetch(indexUrl);
-      }
-
-      return response.ok && response.headers.get("content-type")?.includes("text/html") !== false;
-    }
-
-    async function scanPages() {
-      const entries = await readDirectory(catalogs.pages.path);
-      const projects = entries.filter(entry => !entry.isDirectory && /\.html$/i.test(entry.name));
-      const folders = entries.filter(entry => entry.isDirectory);
-
-      const folderResults = await Promise.all(folders.map(async folder =>
-        await hasRootIndex(folder.path) ? {
-          ...folder,
-          label: folder.name,
-          path: `/a/${encodeURIComponent(folder.name)}/`,
-          kind: "DIR"
-        } : null
-      ));
-
-      return [
-        ...folderResults.filter(Boolean),
-        ...projects.map(project => ({
-          ...project,
-          label: project.name,
-          path: `/a/${encodeURIComponent(project.name.replace(/\.html$/i, ""))}`,
-          kind: "HTML"
-        }))
-      ];
-    }
-
-    async function scanMedia() {
-      const pending = [catalogs.media.path];
-      const visited = new Set();
-      const files = [];
-
-      while (pending.length) {
-        const directory = pending.shift();
-        if (visited.has(directory)) {
-          continue;
-        }
-        visited.add(directory);
-
-        for (const entry of await readDirectory(directory)) {
-          if (entry.isDirectory) {
-            pending.push(entry.path);
-          } else {
-            files.push({
-              ...entry,
-              label: entry.path.slice(catalogs.media.path.length),
-              kind: fileKind(entry.name)
-            });
-          }
-        }
-      }
-
-      return files;
-    }
-
-    function fileKind(name) {
-      const extension = name.split(".").pop().toLowerCase();
-      const kinds = {
-        avif: "IMG", gif: "IMG", jpeg: "IMG", jpg: "IMG", png: "IMG", svg: "IMG", webp: "IMG",
-        mp3: "AUD", m4a: "AUD", ogg: "AUD", wav: "AUD",
-        mp4: "VID", mov: "VID", webm: "VID",
-        pdf: "PDF"
-      };
-      return kinds[extension] || "FILE";
+      return catalog;
     }
 
     function renderCatalog(catalog, items) {
@@ -497,7 +395,7 @@
       catalog.items = [];
       catalog.message.hidden = false;
       catalog.message.classList.add("error");
-      catalog.message.textContent = `${error.message} Comprueba que el servidor permita listar carpetas.`;
+      catalog.message.textContent = `${error.message} Ejecuta el comando de compilación para generar el catálogo.`;
       filterCatalog(catalog);
     }
 
@@ -553,26 +451,20 @@
       filterCatalog(catalogs.media);
     });
 
-    async function loadCatalog(key, scanner) {
+    function loadCatalog(key, items) {
       const catalog = catalogs[key];
-      try {
-        renderCatalog(catalog, await scanner());
-        return true;
-      } catch (error) {
-        renderError(catalog, error);
-        return false;
-      }
+      renderCatalog(catalog, items);
     }
 
-    Promise.all([
-      loadCatalog("pages", scanPages),
-      loadCatalog("media", scanMedia)
-    ]).then(results => {
-      const found = results.reduce((sum, success, index) =>
-        sum + (success ? (catalogs[index === 0 ? "pages" : "media"].items || []).length : 0), 0);
-      scanState.textContent = results.every(Boolean)
-        ? `${found} elementos`
-        : "Revisa el acceso a las carpetas";
+    readCatalog().then(catalog => {
+      loadCatalog("pages", catalog.pages);
+      loadCatalog("media", catalog.media);
+      const found = catalog.pages.length + catalog.media.length;
+      scanState.textContent = `${found} elementos`;
+    }).catch(error => {
+      renderError(catalogs.pages, error);
+      renderError(catalogs.media, error);
+      scanState.textContent = "No se pudo cargar el catálogo";
     });
   </script>
 </body>
